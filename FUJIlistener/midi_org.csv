@@ -1,0 +1,30 @@
+0, 0, Header, 1, 2, 480
+1, 0, Start_track
+1, 0, Tempo, 500000
+1, 0, Time_signature, 4, 2, 24, 8
+1, 0, Marker_t, "Start"
+1, 288000, Marker_t, "End"
+1, 288000, End_track
+2, 0, Start_track
+2, 0, Title_t, "Track 1"
+2, 0, Note_on_c, 0, 80, 102
+2, 0, Pitch_bend_c, 0, 8192
+2, 480, Note_off_c, 0, 80, 102
+2, 480, Note_on_c, 0, 80, 102
+2, 720, Note_off_c, 0, 80, 102
+2, 720, Note_on_c, 0, 83, 102
+2, 960, Note_off_c, 0, 83, 102
+2, 960, Note_on_c, 0, 85, 102
+2, 1440, Note_off_c, 0, 85, 102
+2, 1440, Note_on_c, 0, 88, 102
+2, 1680, Note_off_c, 0, 88, 102
+2, 1680, Note_on_c, 0, 85, 94
+2, 1920, Note_off_c, 0, 85, 94
+2, 1920, Note_on_c, 0, 83, 102
+2, 2400, Note_off_c, 0, 83, 102
+2, 2400, Note_on_c, 0, 83, 102
+2, 2880, Note_off_c, 0, 83, 102
+2, 2880, Note_on_c, 0, 83, 102
+2, 3360, Note_off_c, 0, 83, 102
+2, 3360, End_track
+0, 0, End_of_file
