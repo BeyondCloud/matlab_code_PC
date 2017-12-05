@@ -1,8 +1,14 @@
 function y = unit_amp(x,amp)
-    x = x(3000:end-3000);
-    xt = x';
-    y = xt;
-    [env_up,env_down] = envelope(xt',500,'peak');
-    err = env_up-env_down;
-    y = x.*(0.3./err);
+    if size(x,1)<size(x,2)
+        x = x';
+    end
+    [env_up,env_down] = envelope(x,500,'peak');
+    y = zeros(size(x,1),1)
+    for i = 1:size(y,1)
+        if(y(i)>0)
+            y(i) = y(i)*(amp/env_up(i));
+        else
+            y(i) = -y(i)*(amp/env_down(i));    
+        end
+    end
 end
