@@ -36,9 +36,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 pathData = 'data/';
 pathOutput = 'output/';
-filename = 'Xia_a_C4.wav';
-% filename = 'SingingVoice.wav';
-n = 400; % pitch amount in cents
+%filename = 'Xia_a_C4.wav';
+filename = 'SingingVoice.wav';
+n = -1200; % pitch amount in cents
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % load the audio signal

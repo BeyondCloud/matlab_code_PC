@@ -72,7 +72,7 @@ algTSM = parameter.algTSM;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 alpha = nthroot(2,12)^(n/100);
 yTsm = algTSM(x,alpha,parameter);
-[p,q] = rat(fsAudio/round(alpha * fsAudio),0.0001);
+[p,q] = rat(fsAudio/round(alpha * fsAudio),0.0001);  
 y = resample(yTsm,p,q,8);
 
 y = normalizeLength(y,size(x,1));
