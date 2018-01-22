@@ -1,6 +1,14 @@
 amp=0.3;
 fs=44100;  % sampling frequency
 duration=2;
-values=0:1/fs:duration;
-freq=200:100/length(values):300-80/length(values);
-a=amp*sin(2*pi* freq.*values)';
+a = 200;
+b = 400;
+t = linspace(0, 2, fs*duration);
+% freq=200:10000/length(values):300-80/length(values);
+a=amp*chirp(t, a, t(end), b);
+% freq =repmat(freq,100,1);
+% freq = reshape(freq,[1,fs*duration]);
+% a=amp*sin(2*pi* freq.*values)';
+% freq = 300;
+% b=amp*sin(2*pi* freq*t);
+% a = [a b];

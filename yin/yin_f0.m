@@ -1,7 +1,7 @@
 function [f0,t]=yin_f0(x,p)
 % default parameter values ([]: to be determined)
 minf0 = 100;			% Hz - minimum frequency
-maxf0 = 1600;			% Hz - maximum frequency
+maxf0 = 500;			% Hz - maximum frequency
 wsize = []; 		% s - integration window size
 lpf = [];			% Hz - lowpass prefiltering cutoff
 thresh = 0.1;		% difference function threshold
@@ -45,6 +45,6 @@ prd=r.r1; % period in samples
 %log2 to make them linear scale
 %f0 = log2(p.sr ./ prd) - log2(440); 	% convert to octaves ref: 440 Hz
 f0 = p.sr ./ prd; %show freq
-t = find(~isnan(f0))*hop;
-f0 = f0(~isnan(f0));
+t = find(~isnan(f0))*p.hop;
+% f0 = f0(~isnan(f0));
 fprintf('mean:%2f\n',mean(f0));
