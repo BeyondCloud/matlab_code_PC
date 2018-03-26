@@ -1,0 +1,35 @@
+% 2009/1/5 othogonal expansion apply to MFCC lab and resynthesize.
+clear all;
+% 1.由tts_lib output串接起來的欲合成之Wavetalbe  
+[wavetable,fs]=wavread('c:/wavetable.wav'); %有切割位置from wavetable,我應該改成讀DS1.rnn以及其切割位置.
+% 2.對應1的切開Wavetable位置
+fid=fopen('c:/wavetable_cut.dat','r');
+wavetable_cut=fread(fid,'int32');  
+wavetable_cut=wavetable_cut+1; % 因為matlab vector開頭index為1,非0
+fclose(fid);
+
+outputwaveform=0; %Initial value
+for i=1:length(wavetable_cut)
+   % 依序取出wavetable內的串接syllable
+     if i~=length(wavetable_cut)
+         source_syllable=wavetable(wavetable_cut(i):wavetable_cut(i+1)-1);
+     else 
+         source_syllable=wavetable(wavetable_cut(i):end);
+     end
+   
+  %  對此音節做分析並求出STRAIGHT Spectrogram
+     
+     
+     
+   % Synthesized speech
+        
+         Cpitch_orthogonal=pitch_orthogonal(((i-1)*4+1):((i-1)*4+4)); % Current pitch
+         Cdur=duration(((i-1)*6+1):((i-1)*6+6));          % Current dur
+         target_syllable=straightmodify(source_syllable,Cpitch_orthogonal,Cdur);                  
+         concatenate target_syllable and add pause
+         outputwaveform=[outputwaveform target_syllable];
+         sprintf('Total %d syllables, %d done!',length(wavetable_cut),i)
+end
+outputwaveform(1)=[]; %拿掉Initial value
+% Block 3: play outputwaveform
+soundsc(outputwaveform,fs);
