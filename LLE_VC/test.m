@@ -32,8 +32,8 @@ for ni = 1:ndata
     sp_target_MLPGGV = mcc2sgram(MCC_target_MLPGGV,513,fs);
 
     % synthesis
-%     yhat = exstraightsynth( f0_target, sp_target_MLPGGV, ap, fs, prmP);
-%     yhat = yhat/M;
+     yhat = exstraightsynth( f0_target, sp_target_MLPGGV, ap, fs, prmP);
+     yhat = yhat/M;
 % 
 %     if max(abs(yhat)) > 1
 %         yhat = yhat/max(abs(yhat));
