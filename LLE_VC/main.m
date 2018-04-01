@@ -33,7 +33,8 @@ clear all; close all; clc;
 % 
 %     disp('done off line')
 %% On-line: Voice Conversion
-    source_test_file = {'src_train\testing_set\s2.wav'};
+%     source_test_file = {'src_train\testing_set\s2.wav'};
+    source_test_file = {'VC_COSPRO_VAD\F002\COSPRO 03_F002phr720_d.wav'};
     opt.K = 256;
     %%don't need this one if we're not estimating quality
 %     target_test_file = {'VC_COSPRO_VAD\M003\COSPRO 03_M003phr720_d.wav'};
