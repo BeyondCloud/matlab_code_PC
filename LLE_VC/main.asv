@@ -34,27 +34,26 @@ clear all; close all; clc;
 %     disp('done off line')
 %% On-line: Voice Conversion
     source_test_file = {'src_train\testing_set\s2.wav'};
-    opt.K = 256;
     %%don't need this one if we're not estimating quality
 %     target_test_file = {'VC_COSPRO_VAD\M003\COSPRO 03_M003phr720_d.wav'};
 
 % Step 1: feature extracion
     % source speaker
-%     disp('Step 1: feature extracion')
-%     opt.speaker_gender = source_gender;
-%     feature_extract(source_test_file,opt);
+    disp('Step 1: feature extracion')
+    opt.speaker_gender = source_gender;
+    feature_extract(source_test_file,opt);
     % target speaker
 %     opt.speaker_gender = target_gender;
 %     feature_extract(target_test_file,opt);
 
 % % Step 2: LLE mapping
-%     disp('Step 2: LLE mapping')
-
-%     LLE_converter(source_test_file, dictionary_file, opt);
-% % 
-% % % Step 3: Poster Filtering
-%     disp('Step 3: Poster Filtering')
-%     poster_filter(source_test_file, dictionary_file, opt);
+    disp('Step 2: LLE mapping')
+    opt.K = 
+    LLE_converter(source_test_file, dictionary_file, opt);
+% 
+% % Step 3: Poster Filtering
+    disp('Step 3: Poster Filtering')
+    poster_filter(source_test_file, dictionary_file, opt);
 
 % % Step 4: Synthesis
     disp('Step 4: Synthesis')

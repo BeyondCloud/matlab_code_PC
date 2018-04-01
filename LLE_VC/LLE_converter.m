@@ -13,6 +13,7 @@ function LLE_converter(source_file, dictionary_file, opt)
     else
         K = 1024;
     end
+    disp(K);
     if isfield(opt, 'tol')
         tol = opt.tol;
     else
