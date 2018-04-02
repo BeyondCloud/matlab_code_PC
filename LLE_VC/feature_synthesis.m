@@ -23,6 +23,8 @@ function feature_synthesis(audio_file,opt)
 
     
     ap_path = 'feature\ap_data\';
+    f0_path = 'feature\f0_data\';
+    
     result_path_mcc = ['result\mcc\',num2str(mccDIM),'dim\'];
     result_path_wav = ['result\wav\'];
     
@@ -33,7 +35,7 @@ function feature_synthesis(audio_file,opt)
         [~,source_filename,~] = fileparts(audio_file{ni});
         load([result_path_mcc,source_filename,'.mat']);
         load([ap_path,source_filename,'.mat']);
-        
+        load([f0_path,source_filename,'.mat']);
         % add power
         MCC_target_MLPGGV = cat(1,MCC_power,MCC_target_MLPGGV);
         
@@ -41,7 +43,7 @@ function feature_synthesis(audio_file,opt)
         sp_target_MLPGGV = mcc2sgram(MCC_target_MLPGGV,513,fs);
         
         % synthesis
-        yhat = exstraightsynth( f0_target, sp_target_MLPGGV, ap, fs, prmP);
+        yhat = exstraightsynth( f0, sp_target_MLPGGV, ap, fs, prmP);
         yhat = yhat/M;
 
         if max(abs(yhat)) > 1

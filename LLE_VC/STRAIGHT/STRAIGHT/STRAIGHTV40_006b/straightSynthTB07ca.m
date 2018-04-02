@@ -43,14 +43,17 @@ end;
 
 fftLengthForLowestF0 = 2^ceil(log2(2*round(fs/lowestF0)));% 27/Nov./2005
 fftl=nii+nii-2;
+% disp(fftLengthForLowestF0);
+% disp(fftl);
+
 if fftl < fftLengthForLowestF0 % 27/Nov./2005
     niiNew = fftLengthForLowestF0/2+1;
     statusReport = 'The FFT length was inconsistent and replaced';
-    disp(size([0:nii-1]));
-    disp(size(ap));
+%     disp(size([0:nii-1]));
+%     disp(size(ap));
     
     n2sgram = interp1([0:nii-1],n2sgram,[0:niiNew-1]*(nii-1)/(niiNew-1));
-    ap = interp1([0:nii-1],ap',[0:niiNew-1]*(nii-1)/(niiNew-1));
+    ap = interp1([0:nii-1],ap,[0:niiNew-1]*(nii-1)/(niiNew-1));
     fftl = fftLengthForLowestF0;
     nii = niiNew;
 end;

@@ -1,6 +1,7 @@
 function build_dictionary( source_file, target_file, dictionary_file, opt)
 %% Setup
     addpath('utility');
+
     if isfield(opt, 'dynamic_flag')
         dynamic_flag = opt.dynamic_flag; 
     else
