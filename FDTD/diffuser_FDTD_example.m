@@ -105,9 +105,10 @@ K(:,:,end-1)=5;     beta(:,:,end-1)=1;
 BK = (6-K)*Courant.*beta/2;
 zero_K=find(K==0);
 five_K=find(K==5);
+look_z = srcPosD(3)+5;
 % Visualisation infrastructure
-bv=K(:,:,srcPosD(3)); bv(bv==6)=0;
-pl = abs(p(:,:,srcPosD(3),1));
+bv=K(:,:,look_z); bv(bv==6)=0;
+pl = abs(p(:,:,look_z,1));
 h1=surface(bv); hold on;
 h2=pcolor(pl); colormap(flipud(bone)); 
 set(gca,'XAxisLocation','top','YAxisLocation','left','ydir','reverse');
@@ -142,7 +143,7 @@ for nn=2:maxN
     % Visualise in 2D
     % Plane parallel to the floor at the source's height
     % Absolute value of pressure, linear scale
-    pl = abs(p(:,:,srcPosD(3),1));
+    pl = abs(p(:,:,look_z,1));
 %     pl = abs(p(:,25,:,1));
     
     set(h2,'CData',pl*2);
