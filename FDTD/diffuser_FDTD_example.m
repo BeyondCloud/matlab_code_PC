@@ -16,16 +16,16 @@ clc
 %% ************************************************** 
 % DEFINE SIMULATION PARAMETERS
 %
-roomDims = [6,6,4];        % Room dimensions [Lx, Ly, Lz] in meters
-srcPos = [3,1.5,2];        % Source position [x,y,z] in meters 
+roomDims = [3,3,12];        % Room dimensions [Lx, Ly, Lz] in meters
+srcPos = [1.5,1.5,1.0];        % Source position [x,y,z] in meters 
 
 fs=10000;                  % Sample rate (Hz)
 Courant=sqrt(1/3);             % Courant number
 c=343.5;                   % Speed of sound in air
 simLength = 0.05;          % how long you want to simulate(seconds).
 ra = 1e-10;                % Admittance of rigid materials
-
 dt=1/fs;                    % (temporal) sample period
+
 dx=c*dt/Courant;                 % (spatial) sample period
 
 maxc = 0.03;               % caxis limits (for visualisation only)
@@ -59,7 +59,7 @@ p = zeros([roomDimsD 3]);   % Pressure matrix (Nx x Ny x Nz x 3)
                             
 K = zeros(roomDimsD);       % Node classification mask
                             % 6 = air, 5 = surface, 4 = edge, 3 = corner
-                            % All nodes are air by default
+                           
                             
 beta = ones(roomDimsD)*ra;  % Boundary admittance mask
                             % default is rigid material ("ra")
@@ -72,7 +72,7 @@ ii=2:roomDimsD(3)-1;
 %% **************************************************
 % DEFINE BOUNDARY CONDITIONS
 %
-
+K = getK();
 % Walls - absorptive
 K(2,:,:)=5;         beta(2,:,:)=1;      
 K(end-1,:,:)=5;     beta(end-1,:,:)=1;
@@ -82,16 +82,16 @@ K(:,end-1,:)=5;     beta(:,end-1,:)=1;
 K(:,:,2)=5;         beta(:,:,2)=1;
 K(:,:,end-1)=5;     beta(:,:,end-1)=1;
 
-K(3:end-2,3:end-2,3:end-2)=6; 
+% K(3:end-2,3:end-2,3:end-2)=6;  % All nodes are air by default
 
 % Scatterer - reflective
 
 
-K =  createWall(K,30,35,2,10);
-K =  createWall(K,37,42,2,6);
-K =  createWall(K,45,50,2,8);
-K =  createWall(K,53,58,2,5);
-K =  createWall2(K,61,66,5,9);
+% K =  createWall(K,30,35,2,10);
+% K =  createWall(K,37,42,2,6);
+% K =  createWall(K,45,50,2,8);
+% K =  createWall(K,53,58,2,5);
+% K =  createWall2(K,61,66,5,9);
 
 % K =  createWall2(K,90,91,90,91);
 
@@ -143,6 +143,8 @@ for nn=2:maxN
     % Plane parallel to the floor at the source's height
     % Absolute value of pressure, linear scale
     pl = abs(p(:,:,srcPosD(3),1));
+%     pl = abs(p(:,25,:,1));
+    
     set(h2,'CData',pl*2);
     if nn==150, maxc=maxc/2; caxis([0 maxc]); end
     title(sprintf('Sample number %d out of %d\n Note that for visual clarity, the colorscale changes at nn=150.',nn,maxN));
