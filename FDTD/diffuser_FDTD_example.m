@@ -17,7 +17,7 @@ clc
 % DEFINE SIMULATION PARAMETERS
 %
 roomDims = [3,3,12];        % Room dimensions [Lx, Ly, Lz] in meters
-srcPos = [1.5,1.5,1.0];        % Source position [x,y,z] in meters 
+srcPos = [1.5,1.5,0.5];        % Source position [x,y,z] in meters 
 
 fs=10000;                  % Sample rate (Hz)
 Courant=sqrt(1/3);             % Courant number
@@ -79,8 +79,8 @@ K(end-1,:,:)=5;     beta(end-1,:,:)=1;
 K(:,2,:)=5;         beta(:,2,:)=1;
 K(:,end-1,:)=5;     beta(:,end-1,:)=1; 
 % floor ceil
-K(:,:,2)=5;         beta(:,:,2)=1;
-K(:,:,end-1)=5;     beta(:,:,end-1)=1;
+K(:,:,2)=0;         beta(:,:,2)=1;
+K(:,:,end-1)=0;     beta(:,:,end-1)=1;
 
 % K(3:end-2,3:end-2,3:end-2)=6;  % All nodes are air by default
 
@@ -105,18 +105,19 @@ K(:,:,end-1)=5;     beta(:,:,end-1)=1;
 BK = (6-K)*Courant.*beta/2;
 zero_K=find(K==0);
 five_K=find(K==5);
-look_z = srcPosD(3)+5;
+
 % Visualisation infrastructure
-bv=K(:,:,look_z); bv(bv==6)=0;
-pl = abs(p(:,:,look_z,1));
+View_plane = {':', 25, ':'};
+bv=squeeze(K(View_plane{:})); bv(bv==6)=0;
+pl = abs(p(View_plane{:},1));
 h1=surface(bv); hold on;
-h2=pcolor(pl); colormap(flipud(bone)); 
+h2=pcolor(squeeze(pl)); colormap(flipud(bone)); 
 set(gca,'XAxisLocation','top','YAxisLocation','left','ydir','reverse');
 hold off;
 colorbar;
 caxis([0 maxc]);
-xlim([2 roomDimsD(1)-1]);
-ylim([2 roomDimsD(2)-1]);
+xlim([2 roomDimsD(3)-1]);
+ylim([2 roomDimsD(1)-1]);
 shading interp;
 
 %% **************************************************
@@ -143,10 +144,9 @@ for nn=2:maxN
     % Visualise in 2D
     % Plane parallel to the floor at the source's height
     % Absolute value of pressure, linear scale
-    pl = abs(p(:,:,look_z,1));
-%     pl = abs(p(:,25,:,1));
-    
-    set(h2,'CData',pl*2);
+    pl = squeeze(abs(p(View_plane{:},1)));
+
+    set(h2,'CData',pl*0.5);
     if nn==150, maxc=maxc/2; caxis([0 maxc]); end
     title(sprintf('Sample number %d out of %d\n Note that for visual clarity, the colorscale changes at nn=150.',nn,maxN));
     drawnow;    
