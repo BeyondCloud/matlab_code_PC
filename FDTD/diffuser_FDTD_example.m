@@ -74,19 +74,18 @@ ii=2:roomDimsD(3)-1;
 %
 K = getK();
 % Walls - absorptive
-K(2,:,:)=5;         beta(2,:,:)=1;      
-K(end-1,:,:)=5;     beta(end-1,:,:)=1;
-K(:,2,:)=5;         beta(:,2,:)=1;
-K(:,end-1,:)=5;     beta(:,end-1,:)=1; 
+K(2,:,:)=0;         beta(2,:,:)=1;      
+K(end-1,:,:)=0;     beta(end-1,:,:)=1;
+K(:,2,:)=0;         beta(:,2,:)=1;
+K(:,end-1,:)=0;     beta(:,end-1,:)=1; 
 % floor ceil
 K(:,:,2)=0;         beta(:,:,2)=1;
 K(:,:,end-1)=0;     beta(:,:,end-1)=1;
 
-% K(3:end-2,3:end-2,3:end-2)=6;  % All nodes are air by default
 
 % Scatterer - reflective
 
-
+% K(3:end-2,3:end-2,3:end-2)=6;  % All nodes are air by default
 % K =  createWall(K,30,35,2,10);
 % K =  createWall(K,37,42,2,6);
 % K =  createWall(K,45,50,2,8);
@@ -107,7 +106,18 @@ zero_K=find(K==0);
 five_K=find(K==5);
 
 % Visualisation infrastructure
-View_plane = {':', 25, ':'};
+axis equal;
+%% View cross section
+% View_plane = {':', 25, ':'}; 
+% xlim([2 roomDimsD(3)-1]);
+% ylim([2 roomDimsD(1)-1]);
+
+%% View longitudinal section
+View_plane = {':', ':', 25}; 
+xlim([0 roomDimsD(1)])
+ylim([0 roomDimsD(1)])
+%%
+
 bv=squeeze(K(View_plane{:})); bv(bv==6)=0;
 pl = abs(p(View_plane{:},1));
 h1=surface(bv); hold on;
@@ -116,8 +126,11 @@ set(gca,'XAxisLocation','top','YAxisLocation','left','ydir','reverse');
 hold off;
 colorbar;
 caxis([0 maxc]);
-xlim([2 roomDimsD(3)-1]);
-ylim([2 roomDimsD(1)-1]);
+
+
+
+
+
 shading interp;
 
 %% **************************************************
@@ -126,6 +139,7 @@ shading interp;
 for nn=2:maxN
 
     % Update the grid
+    % c = dx/dt
     p(ll,mm,ii,1) = ((2-K(ll,mm,ii)*Courant^2).*p(ll,mm,ii,2) + (BK(ll,mm,ii)-1).*p(ll,mm,ii,3) ...
         + (Courant^2) * (p(ll+1,mm,ii,2) + p(ll-1,mm,ii,2) + p(ll,mm+1,ii,2) ...
         + p(ll,mm-1,ii,2) + p(ll,mm,ii+1,2) + p(ll,mm,ii-1,2))) ./ (1+BK(ll,mm,ii));
@@ -149,5 +163,6 @@ for nn=2:maxN
     set(h2,'CData',pl*0.5);
     if nn==150, maxc=maxc/2; caxis([0 maxc]); end
     title(sprintf('Sample number %d out of %d\n Note that for visual clarity, the colorscale changes at nn=150.',nn,maxN));
+
     drawnow;    
 end
