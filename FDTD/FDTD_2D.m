@@ -1,14 +1,3 @@
-%% **************************************************
-%
-% Example 3D-FDTD code to simulate scattering
-%
-% v1.0 - July 2015
-%
-% Jonathan Sheaffer, Ben-Gurion University, Israel
-% Trevor Cox, University of Salford, UK
-%
-
-
 clear
 close
 clc
@@ -16,8 +5,8 @@ clc
 %% ************************************************** 
 % DEFINE SIMULATION PARAMETERS
 %
-roomDims = [0.03,0.03,0.12];        % Room dimensions [Lx, Ly, Lz] in meters
-srcPos = [0.015,0.015,0.005];        % Source position [x,y,z] in meters 
+roomDims = [0.03,0.12];        % Room dimensions [Lx, Ly, Lz] in meters
+srcPos = [0.015,0.06];        % Source position [x,y,z] in meters 
 
 fs=1000000;                  % Sample rate (Hz)
 Courant=sqrt(1/3);             % Courant number
@@ -48,10 +37,10 @@ n=0:maxN;
 srcFn=exp(-dt^2*(n-n0).^2/(2*sigma^2));
 srcFn=filter([1 -1], [1 -0.995], srcFn); % DC Blocker
 % srcFn = repmat(srcFn(1:50),1,10);
-% srcFn = srcFn(1:500);
-[x,fs_G] = audioread('M_GT.wav');
-srcFn = resample( x ,fs ,fs_G); 
-srcFn = 5*srcFn(1:maxN);
+srcFn = 0.3*srcFn(1:maxN);
+% [x,fs_G] = audioread('M_GT.wav');
+% srcFn = resample( x ,fs ,fs_G); 
+% srcFn = 5*srcFn(1:maxN);
 %% **************************************************
 % ALLOCATE MATRICES
 %
@@ -61,30 +50,26 @@ p = zeros([roomDimsD 3]);   % Pressure matrix (Nx x Ny x Nz x 3)
                             % (:,:,:,2) is (n)
                             % (:,:,:,3) is (n-1)
                             
-K = zeros(roomDimsD);       % Node classification mask
+K = 6*ones(roomDimsD);       % Node classification mask
                             % 6 = air, 5 = surface, 4 = edge, 3 = corner
                            
                             
 beta = ones(roomDimsD)*ra;  % Boundary admittance mask
                             % default is rigid material ("ra")
                             
-% Define shift vectors
-ll=2:roomDimsD(1)-1;
-mm=2:roomDimsD(2)-1;
-ii=2:roomDimsD(3)-1;
+
 
 %% **************************************************
 % DEFINE BOUNDARY CONDITIONS
 %
-K = getK(roomDimsD);
+
 % Walls - absorptive
-K(2,:,:)=0;         beta(2,:,:)=1;      
-K(end-1,:,:)=0;     beta(end-1,:,:)=1;
-K(:,2,:)=0;         beta(:,2,:)=1;
-K(:,end-1,:)=0;     beta(:,end-1,:)=1; 
+K(1:2,:)=0;         beta(1:2,:)=1;      
+K(end-1:end,:)=0;     beta(end-1:end,:)=1;
+
 % floor ceil
-K(:,:,2)=0;         beta(:,:,2)=1;
-K(:,:,end-1)=0;     beta(:,:,end-1)=1;
+K(:,1:2)=0;         beta(:,1:2)=1;
+K(:,end-1:end)=0;     beta(:,end-1:end)=1;
 
 
 % Scatterer - reflective
@@ -105,15 +90,13 @@ K(:,:,end-1)=0;     beta(:,:,end-1)=1;
 %
 
 % Intermediate boundary matrix
-BK = (6-K)*Courant.*beta/2;
 zero_K=find(K==0);
-five_K=find(K==5);
 
 % Visualisation infrastructure
 % axis equal;
 %% View cross section
-View_plane = {':', 25, ':'}; 
-xlim([2 roomDimsD(3)-1]);
+View_plane = {':',':'}; 
+xlim([2 roomDimsD(2)-1]);
 ylim([2 roomDimsD(1)-1]);
 
 %% View longitudinal section
@@ -140,15 +123,19 @@ shading interp;
 %% **************************************************
 % EXECUTE SIMULATION
 %
-source_range = {(srcPosD(1)-2):(srcPosD(1)+2),(srcPosD(2)-5):(srcPosD(2)+5),srcPosD(3),2};
+source_range = {srcPosD(1),srcPosD(2),2};
+% Define shift vectors
+ll=4:roomDimsD(1)-4;
+ii=4:roomDimsD(2)-4;
 for nn=2:maxN
 
-    % Update the grid
+    % Update air
     % c = dx/dt
-    p(ll,mm,ii,1) = ((2-K(ll,mm,ii)*Courant^2).*p(ll,mm,ii,2) + (BK(ll,mm,ii)-1).*p(ll,mm,ii,3) ...
-        + (Courant^2) * (p(ll+1,mm,ii,2) + p(ll-1,mm,ii,2) + p(ll,mm+1,ii,2) ...
-        + p(ll,mm-1,ii,2) + p(ll,mm,ii+1,2) + p(ll,mm,ii-1,2))) ./ (1+BK(ll,mm,ii));
+    p(ll,ii,1) = 2*p(ll,ii,2) -p(ll,ii,3) ...
+        + (Courant^2) * (p(ll+1,ii,2) + p(ll-1,ii,2)...
+        + p(ll,ii+1,2) + p(ll,ii-1,2) - 4*p(ll,ii,2));
 
+    
     % Enforce zero pressure at 'dead spaces' (inside objects)
     p(zero_K)=0;
 %     p(five_K)=0;
@@ -159,14 +146,13 @@ for nn=2:maxN
     
     
     % Shift matrices in time
-    p(:,:,:,3) = p(:,:,:,2);
-    p(:,:,:,2) = p(:,:,:,1);
+    p(:,:,3) = p(:,:,2);
+    p(:,:,2) = p(:,:,1);
     
-    record(nn) =  p(25,25,200,2);
+%     record(nn) =  p(25,25,200,2);
     % Visualise in 2D
     % Plane parallel to the floor at the source's height
     % Absolute value of pressure, linear scale
-     disp(nn);
     pl = squeeze(abs(p(View_plane{:},1)));
 
     set(h2,'CData',pl*0.5);
