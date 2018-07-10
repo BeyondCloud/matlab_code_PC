@@ -5,19 +5,17 @@ clc
 %% ************************************************** 
 % DEFINE SIMULATION PARAMETERS
 %
-roomDims = [0.03,0.12];        % Room dimensions [Lx, Ly, Lz] in meters
-srcPos = [0.015,0.06];        % Source position [x,y,z] in meters 
+roomDims = [500,500];        % Room dimensions [Lx, Ly, Lz] in meters
+srcPos = [roomDims(1)/2,roomDims(2)/2];        % Source position [x,y,z] in meters 
 
-fs=1000000;                  % Sample rate (Hz)
-Courant=sqrt(1/3);             % Courant number
-c=343.5;                   % Speed of sound in air
-simLength = 0.05;          % how long you want to simulate(seconds).
-ra = 1e-10;                % Admittance of rigid materials
-dt=1/(fs);                    % (temporal) sample period
+c=3000;                   % Speed of sound in air
+simLength = 2;          % how long you want to simulate(seconds).
 
-dx=c*dt/Courant;                 % (spatial) sample period
-
-maxc = 0.03;               % caxis limits (for visualisation only)
+dt=0.001;                    % (temporal) sample period
+density = 2.3;
+dx=10;                 % (spatial)
+Courant=c*dt/dx;   
+maxc = 0.3;               % caxis limits (for visualisation only)
 
 roomDimsD = round(roomDims/dx)+2;    % Room dimensions [Nx,Ny,Nz] in nodes
 srcPosD = round(srcPos/dx);          % Discrete source position
@@ -49,14 +47,23 @@ p = zeros([roomDimsD 3]);   % Pressure matrix (Nx x Ny x Nz x 3)
                             % (:,:,:,1) is (n+1)
                             % (:,:,:,2) is (n)
                             % (:,:,:,3) is (n-1)
-                            
+
+v = zeros([roomDimsD 3]); % velocity matrix 
+
+ox = zeros([roomDimsD]); 
+oy = zeros([roomDimsD]); 
+PMLsize = 3;
+for i = 1:PMLsize
+    tmp = (i/PMLsize)^3;
+    ox(i,:) = tmp;
+    ox(end-i,:) =tmp;
+    oy(:,i) =tmp;
+    oy(i,end-i) = tmp;
+end
+
 K = 6*ones(roomDimsD);       % Node classification mask
                             % 6 = air, 5 = surface, 4 = edge, 3 = corner
-                           
-                            
-beta = ones(roomDimsD)*ra;  % Boundary admittance mask
-                            % default is rigid material ("ra")
-                            
+
 
 
 %% **************************************************
@@ -138,7 +145,7 @@ for nn=2:maxN
     
     % Enforce zero pressure at 'dead spaces' (inside objects)
     p(zero_K)=0;
-%     p(five_K)=0;
+
 
     % Inject the source (soft source)
     

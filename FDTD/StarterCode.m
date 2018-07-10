@@ -72,13 +72,22 @@ ii=2:roomDimsD(3)-1;
 % DEFINE BOUNDARY CONDITIONS
 %
 
+
+
 % Walls - absorptive
-K(2,:,:)=5;         beta(2,:,:)=1;      
-K(end-1,:,:)=5;     beta(end-1,:,:)=1;
-K(:,2,:)=5;         beta(:,2,:)=1;
-K(:,end-1,:)=5;     beta(:,end-1,:)=1; 
-K(:,:,2)=5;         beta(:,:,2)=1;
-K(:,:,end-1)=5;     beta(:,:,end-1)=1;
+K(2,:,:)=5;         beta(2,:,:)=0.29;      
+K(end-1,:,:)=5;     beta(end-1,:,:)=0.29;
+K(:,2,:)=5;         beta(:,2,:)=0.29;
+K(:,end-1,:)=5;     beta(:,end-1,:)=0.29; 
+K(:,:,2)=5;         beta(:,:,2)=0.29;
+K(:,:,end-1)=5;     beta(:,:,end-1)=0.29;
+
+beta(3,:,:)=1;      
+beta(end-2,:,:)=1;
+beta(:,3,:)=1;
+beta(:,end-2,:)=1; 
+beta(:,:,2)=3;
+beta(:,:,end-2)=1;
 
 K(3:end-2,3:end-2,3:end-2)=6; 
 
